@@ -1,0 +1,30 @@
+Exp1:
+
+The benchmarks tp help deciding the “best” TCP variant would be the following:
+1)	Throughput: Ratio of total data transferred to the time taken to transfer.
+2)	Latency: Roundtrip time for a packet
+3)	Packet Drops: Number of packet loss during transmission
+
+Add a CBR source at N2 and a sink at N3, then add a single TCP stream from N1 to a sink at N4. Analyze the throughput,
+packet drop rate, and latency of the TCP stream as a function of the bandwidth used by the CBR flow.
+Start the CBR at a rate of 1Mbps and end with 10Mbps with increment of 1MB.
+Then, start TCP stream and record the data between TCP starts and TCP stream becomes
+steady, including the throughput, latency and packet drop rate(y axis)
+compare to CBR flow rate(x axis). Do the test multiple times and get the average to minimize the random error.
+
+Exp2:
+
+
+
+Exp3:
+
+First, start the TCP flow. Once the TCP flow is steady, start the CBR source and analyze how the TCP and CBR flows
+change under the following queuing algorithms: DropTail and RED. And to compare the performance of Reno and SACK.
+The topology is same from experiment 1 and having TCP flow from N1 to N4 and CBR flow from
+N5 to N6.
+
+The CBR flow rate is not relevant, thus set it to a
+constant rate(e.g. 5Mbps). Plot throughput, latency and packet
+drop rate vs. time(s) graphics and compare Reno(DropTail), Reno(RED), SACK(DropTail),
+SACK(RED), CBR(DropTail), CBR(RED) in this experiment.
+
