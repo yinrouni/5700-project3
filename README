@@ -14,7 +14,9 @@ compare to CBR flow rate(x axis). Do the test multiple times and get the average
 
 Exp2:
 
-
+one CBR, and two TCP. Add a CBR source at N2 and a sink at N3, then add two TCP streams from N1 to N4 and N5 to N6,
+respectively. Similarly to Experiment1, start TCP stream and record the data between TCP starts and TCP stream becomes
+steady. Compare the different pairs of TCP variants, and investigate the fairness between them.
 
 Exp3:
 
