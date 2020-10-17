@@ -1,22 +1,31 @@
+README
 Exp1:
 
 The benchmarks tp help deciding the “best” TCP variant would be the following:
-1)	Throughput: Ratio of total data transferred to the time taken to transfer.
-2)	Latency: Roundtrip time for a packet
-3)	Packet Drops: Number of packet loss during transmission
+1) Throughput: Ratio of total data transferred to the time taken to transfer.
+2) Latency: Roundtrip time for a packet
+3) Packet Drops: Number of packet loss during transmission
 
 Add a CBR source at N2 and a sink at N3, then add a single TCP stream from N1 to a sink at N4. Analyze the throughput,
 packet drop rate, and latency of the TCP stream as a function of the bandwidth used by the CBR flow.
 Start the CBR at a rate of 1Mbps and end with 10Mbps with increment of 1MB.
-Then, start TCP stream and record the data between TCP starts and TCP stream becomes
+Then, start CBR flow and record the data between TCP starts and TCP stream becomes
 steady, including the throughput, latency and packet drop rate(y axis)
-compare to CBR flow rate(x axis). Do the test multiple times and get the average to minimize the random error.
+compare to CBR flow rate(x axis).
+To generalize the experiment, we will:
+- Analyze the the different situations of CBR start: start CBR flow when TCP flow is steady and start CBR flow before TCP flow is steady
+- Vary the timing of flow start times randomly
+- Do the test multiple times(>10) and analyze the average, median, and the standard deviation
 
 Exp2:
 
 one CBR, and two TCP. Add a CBR source at N2 and a sink at N3, then add two TCP streams from N1 to N4 and N5 to N6,
-respectively. Similarly to Experiment1, start TCP stream and record the data between TCP starts and TCP stream becomes
-steady. Compare the different pairs of TCP variants, and investigate the fairness between them.
+respectively. Similarly to Experiment1, start CBR flow and record the data before TCP. Compare the different pairs of TCP variants, and investigate the fairness between them.
+To generalize the experiment, we will:
+- Run experiment multiple times(>10)
+- Vary the relative time when TCP1 and TCP2 started randomly
+- Do the test multiple times and analyze the average, median, and the standard deviation
+
 
 Exp3:
 
