@@ -66,6 +66,7 @@ $ns connect $tcp $sink
 #setup a FTP Application
 set ftp [new Application/FTP]
 $ftp attach-agent $tcp
+$ftp set type_ FTP
 
 #Schedule events for the CBR and FTP agents
 $ns at 0.0 "$cbr start"
