@@ -5,9 +5,16 @@ set ns [new Simulator]
 set variant [lindex $argv 0]
 # CBR rate
 set rate [lindex $argv 1]
+# tcp start time
+set start [lindex $argv 2]
+# tcp end time
+set end [lindex $argv 3]
+# index
+set i [lindex $argv 4]
+
 
 # Open the trace file
-set tf [open ${variant}_output-${rate}.tr w]
+set tf [open ${variant}_output-${rate}-${i}.tr w]
 $ns trace-all $tf
 
 # Define a 'finish' procedure
@@ -62,6 +69,7 @@ $ns attach-agent $n1 $tcp
 set sink [new Agent/TCPSink]
 $ns attach-agent $n4 $sink
 $ns connect $tcp $sink
+$tcp set fid_ 1
 
 #setup a FTP Application
 set ftp [new Application/FTP]
@@ -69,10 +77,10 @@ $ftp attach-agent $tcp
 $ftp set type_ FTP
 
 #Schedule events for the CBR and FTP agents
-$ns at 0.0 "$cbr start"
 $ns at 0.0 "$ftp start"
-$ns at 10.0 "$ftp stop"
-$ns at 10.0 "$cbr stop"
+$ns at $start "$cbr start"
+$ns at $end "$cbr stop"
+$ns at 105.0 "$ftp stop"
 
 #Call the finish procedure after  seconds of simulation time
 $ns at 10.0 "finish"
