@@ -93,6 +93,8 @@ def dataProcess(data):
         if d != 0:
             cnt += 1
             sum += d
+    if (cnt == 0):
+        return 0, 0
     mean = sum / cnt
     diffSqr = 0
     for d in data:
@@ -103,14 +105,13 @@ def dataProcess(data):
 
 
 # Generate trace file
-for var in TCP_Variant:
+for i in range(0, 10):
     for rate in range(1, 11):
-        for i in range(0, 10):
+        for var in TCP_Variant:
             # Vary relative start time of 2 flows
-            startTime = random.random() * 20
-            # print(startTime)
-            endTime = 100
-            # print(startTime, endTime)
+            startTime = random.random() * 12
+            endTime = 18
+
             os.system(
                 ns_command + "exp1.tcl " + var + " " + str(rate) + " " + str(startTime) + " " + str(
                     endTime) + " " + str(i))
@@ -129,6 +130,8 @@ for var in TCP_Variant:
             droprate.append(getDropRate(var, rate, i))
             latency.append(getLatency(var, rate, i))
         # print(throughput)
+        # print(droprate)
+        # print(latency)
         throughputRes = '\t'.join(map(str, dataProcess(throughput)))
         latencyRes = '\t'.join(map(str, dataProcess(latency)))
         droprateRes = '\t'.join(map(str, dataProcess(droprate)))
