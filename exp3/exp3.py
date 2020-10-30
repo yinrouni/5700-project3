@@ -16,48 +16,13 @@ def parse(line):
     return ret
 
 
-def getThroughput(tvar, qvar):
-    f = open(tvar + "-" + qvar + "_output.tr")
-    output = open('exp3_' + tvar + '_' + qvar + '_throughput.dat', 'w')
+def getLatency(var, q):
+    f = open(var + "-" + q + "_output.tr")
     lines = f.readlines()
     f.close()
-    clock = 0.0
-    sum1 = sum2 = 0
 
-    for line in lines:
-        record = parse(line)
-        if record['flow_id'] == "0" and record['event'] == "r" and record['to_node'] == "5":
-            # CBR
-            sum1 += record['pkt_size'] * 8
-        if record['flow_id'] == "1" and record['event'] == "r" and record['to_node'] == "3":
-            # TCP
-            sum2 += record['pkt_size'] * 8
+    output = open('exp3_' + var + '_' + q + '_delay.dat', 'w')
 
-        if (record['time'] - clock <= STEP):
-            pass
-        else:
-            thp1 = sum1 /STEP /1000000
-            thp2 = sum2 / STEP /1000000
-
-            output.write(str(clock) + "\t" + str(thp1) + "\t" + str(thp2) + "\n")
-
-            clock += STEP
-            sum1 = sum2 = 0
-
-    # print(str(clock) + "\t" + str(thp1)+ "\t" + str(thp2))
-    output.write(str(clock) + "\t" + str(thp1) + "\t" + str(thp2) + "\n")
-    output.close()
-
-
-# def getDropRate(tvar, qvar):
-#     pass
-
-
-def getLatency(tvar, qvar):
-    f = open(tvar + "-" + qvar + "_output.tr")
-    output = open('exp3_' + tvar + '_' + qvar + '_delay.dat', 'w')
-    lines = f.readlines()
-    f.close()
     start_time1 = {}
     end_time1 = {}
     total_duration1 = total_duration2 = 0.0
@@ -68,23 +33,21 @@ def getLatency(tvar, qvar):
 
     for line in lines:
         record = parse(line)
-        #CBR
+        # CBR
         if record['flow_id'] == "0":
             if record['event'] == "+" and record['from_node'] == "4":
                 start_time1.update({record['seq_num']: record['time']})
             if record['event'] == "r" and record['to_node'] == "5":
                 end_time1.update({record['seq_num']: record['time']})
-        #TCP
+        # TCP
         if record['flow_id'] == "1":
-            if record['event'] == "+" and record['from_node']== "0":
+            if record['event'] == "+" and record['from_node'] == "0":
                 start_time2.update({record['seq_num']: record['time']})
             if record['event'] == "r" and record['to_node'] == "0":
                 end_time2.update({record['seq_num']: record['time']})
 
-        if (record['time'] - clock <= STEP):
-            pass
-        else:
-            #cbr
+        if (record['time'] - clock > STEP):
+            # cbr
             packets = {x for x in start_time1.viewkeys() if x in end_time1.viewkeys()}
             for i in packets:
 
@@ -92,16 +55,23 @@ def getLatency(tvar, qvar):
                 if (duration > 0):
                     total_duration1 += duration
                     total_packet1 += 1
-            #tcp
+            # tcp
             packets = {x for x in start_time2.viewkeys() if x in end_time2.viewkeys()}
             for i in packets:
                 duration = end_time2.get(i) - start_time2.get(i)
-                if (duration > 0):
+                if duration > 0:
                     total_duration2 += duration
                     total_packet2 += 1
 
-            delay1 = 0 if total_packet1 == 0 else total_duration1 / total_packet1 * 1000
-            delay2 = 0 if total_packet2 == 0 else total_duration2 / total_packet2 * 1000
+            if total_packet1 == 0:
+                delay1 = 0
+            else:
+                delay1 = total_duration1 / total_packet1 * 1000
+
+            if total_packet2 == 0:
+                delay2 = 0
+            else:
+                delay2 = total_duration2 / total_packet2 * 1000
 
             output.write(str(clock) + '\t' + str(delay1) + '\t' + str(delay2) + '\n')
             # Clear counter
@@ -117,15 +87,47 @@ def getLatency(tvar, qvar):
     output.close()
 
 
+def getThroughput(var, q):
+    f = open(var + "-" + q + "_output.tr")
+    lines = f.readlines()
+    f.close()
+
+    output = open('exp3_' + var + '_' + q + '_throughput.dat', 'w')
+
+    clock = 0.0
+    sum1 = sum2 = 0
+
+    for line in lines:
+        record = parse(line)
+        if record['flow_id'] == "0" and record['event'] == "r" and record['to_node'] == "5":
+            # CBR
+            sum1 += record['pkt_size']
+        if record['flow_id'] == "1" and record['event'] == "r" and record['to_node'] == "3":
+            # TCP
+            sum2 += record['pkt_size']
+
+        if (record['time'] - clock > STEP):
+            res1 = sum1 * 8 / STEP / 1000000
+            res2 = sum2 * 8 / STEP / 1000000
+
+            output.write(str(clock) + "\t" + str(res1) + "\t" + str(res2) + "\n")
+
+            clock += STEP
+            sum1 = sum2 = 0
+
+    output.write(str(clock) + "\t" + str(res1) + "\t" + str(res2) + "\n")
+    output.close()
+
+
 # Generate trace files
 for var in TCP:
     for q in QUEUE:
         os.system(ns_command + "exp3.tcl " + var + " " + q)
 
 # Calculate Throughput and Latency
-for tvar in TCP:
-    for qvar in QUEUE:
-        getThroughput(tvar, qvar)
-        getLatency(tvar, qvar)
+for var in TCP:
+    for q in QUEUE:
+        getThroughput(var, q)
+        getLatency(var, q)
 
 os.system('rm *.tr')
