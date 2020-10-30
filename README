@@ -40,4 +40,3 @@ drop rate vs. time(s) graphics and compare Reno(DropTail), Reno(RED), SACK(DropT
 SACK(RED), CBR(DropTail), CBR(RED) in this experiment.
 
 Rouni Yin implements exp1 and exp3. Chihao Sun implements exp2. And we work together on the rest part of the paper(Introduction and conclusion)
-The CBR flow rate is not relevant, thus set it to a
