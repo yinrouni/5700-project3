@@ -168,11 +168,11 @@ def dataProcess(data):
 for var in Pairs_Of_TCP_Variants:
     for rate in range(1, 11):
         for i in range(0,10):
-            tcp2_start_time = random.random()
-            cbr_start_time = random.random() * 12
+            tcp1_start_time = random.random()
+            tcp2_start_time = random.random() * 12
             tcps = var.split('_')
             os.system(ns_command + "exp2.tcl " + tcps[0] + " " + tcps[1] + " " + str(rate) + " " + \
-                str(cbr_start_time) + " " +str(tcp2_start_time) + " " + str(i))
+                str(tcp1_start_time) + " " +str(tcp2_start_time) + " " + str(i))
 
 
 for var in Pairs_Of_TCP_Variants:

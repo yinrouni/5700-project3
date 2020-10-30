@@ -9,7 +9,7 @@ set variant2 [lindex $argv 1]
 set rate [lindex $argv 2]
 
 # CBR start time
-set cbrStartTime [lindex $argv 3]
+set tcp1StartTime [lindex $argv 3]
 
 # TCP2 start time
 set tcp2StartTime [lindex $argv 4]
@@ -93,15 +93,15 @@ set ftp2 [new Application/FTP]
 $ftp2 attach-agent $tcp2
 
 # Schedule events for the CBR and FTP agents
-$ns at 0.0 "$ftp1 start"
+$ns at 0.0 "$cbr start"
+$ns at $tcp1StartTime "$ftp1 start"
 $ns at $tcp2StartTime "$ftp2 start"
-$ns at $cbrStartTime "$cbr start"
-$ns at 20.0 "$ftp2 stop"
-$ns at 20.0 "$ftp1 stop"
-$ns at 20.0 "$cbr stop"
+$ns at 25.0 "$ftp2 stop"
+$ns at 25.0 "$ftp1 stop"
+$ns at 25.0 "$cbr stop"
 
 # Call the finish procedure after  seconds of simulation time
-$ns at 20.0 "finish"
+$ns at 25.0 "finish"
 
 # Run the simulation
 $ns run
