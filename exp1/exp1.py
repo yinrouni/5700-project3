@@ -16,6 +16,14 @@ def parse(line):
 
 
 def getThroughput(var, rate, i):
+    """The function that get the throughput
+    Args:
+        var: TCP variants
+        rate: CBR rate
+        i: index
+    Returns: 
+        float return the throughput of TCP
+    """
     filename = var + "_output-" + str(rate) + "-" + str(i) + ".tr"
     f = open(filename)
     lines = f.readlines()
@@ -38,6 +46,14 @@ def getThroughput(var, rate, i):
 
 
 def getDropRate(var, rate, i):
+    """The function that get the packet drop rate
+    Args:
+        var: TCP variants
+        rate: CBR rate
+        i: index
+    Returns: 
+        float return the drop rate of TCP
+    """
     filename = var + "_output-" + str(rate) + "-" + str(i) + ".tr"
     f = open(filename)
     lines = f.readlines()
@@ -55,7 +71,7 @@ def getDropRate(var, rate, i):
     else:
         return float(sendNum - recvdNum) / float(sendNum)
 
-
+# The help function of getLatency
 def latencyHelp(cxt, start_time, end_time):
     for line in cxt:
         record = parse(line)
@@ -66,10 +82,21 @@ def latencyHelp(cxt, start_time, end_time):
                 end_time.update({record['seq_num']: record['time']})
 
 def getLatency(var, rate, i):
+    """The function that get the latency of TCP
+    Args:
+        var: TCP variants
+        rate: CBR rate
+        i: index
+    Returns: 
+        float return the drop rate of TCP
+    """
+    # trace file name
     filename = var + "_output-" + str(rate) + "-" + str(i) + ".tr"
     f = open(filename)
+    # read data
     lines = f.readlines()
     f.close()
+    # set initial data
     start_time = {}
     end_time = {}
     total_duration = 0.0

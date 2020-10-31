@@ -16,6 +16,14 @@ def parse(line):
 
 
 def getThroughput(var, rate, i):
+    """The function that get the throughput
+    Args:
+        var: TCP variants
+        rate: CBR rate
+        i: index
+    Returns: 
+        String return the throughputs of two TCP
+    """
     filename = var + "_output-" + str(rate) + "-" + str(i) + ".tr"
     f = open(filename)
     lines = f.readlines()
@@ -53,6 +61,14 @@ def getThroughput(var, rate, i):
 
 
 def getDropRate(var, rate, i):
+    """The function that get the packet drop rate
+    Args:
+        var: TCP variants
+        rate: CBR rate
+        i: index
+    Returns: 
+        String return the drop rate of two TCP
+    """
     filename = var + "_output-" + str(rate) + "-" + str(i) + ".tr"
     f = open(filename)
     lines = f.readlines()
@@ -90,10 +106,21 @@ def getDelay(total, duration):
 
 
 def getLatency(var, rate, i):
+    """The function that get the latency of TCP
+    Args:
+        var: TCP variants
+        rate: CBR rate
+        i: index
+    Returns: 
+        String return the drop rate of TCP
+    """
+    # trace file name
     filename = var + "_output-" + str(rate) + "-" + str(i) + ".tr"
     f = open(filename)
+    # read data
     lines = f.readlines()
     f.close()
+    # set initial data
     start_time1 = {}
     end_time1 = {}
     start_time2 = {}
@@ -174,7 +201,9 @@ for var in Pairs_Of_TCP_Variants:
             os.system(NS + "exp2.tcl " + tcps[0] + " " + tcps[1] + " " + str(rate) + " " + \
                       str(tcp1_start_time) + " " + str(tcp2_start_time) + " " + str(i))
 
+# generate the data file
 for var in Pairs_Of_TCP_Variants:
+    # get two TCP variants
     tcps = var.split('_')
     f_throughput = open('exp2_' + var + '_throughput.dat', 'w')
     f_droprate = open('exp2_' + var + '_droprate.dat', 'w')
@@ -197,6 +226,7 @@ for var in Pairs_Of_TCP_Variants:
         droprate2 = []
         latency1 = []
         latency2 = []
+        # run experiment 10 times
         for i in range(0, 10):
             throughput = getThroughput(var, rate, i).split('\t')
             droprate = getDropRate(var, rate, i).split('\t')
@@ -208,7 +238,7 @@ for var in Pairs_Of_TCP_Variants:
             droprate2.append(float(droprate[1]))
             latency1.append(float(latency[0]))
             latency2.append(float(latency[1]))
-
+        # get mean and stddev
         throughput1_res = '\t'.join(map(str, dataProcess(throughput1)))
         throughput2_res = '\t'.join(map(str, dataProcess(throughput2)))
         droprate1_res = '\t'.join(map(str, dataProcess(droprate1)))
@@ -216,10 +246,12 @@ for var in Pairs_Of_TCP_Variants:
         latency1_res = '\t'.join(map(str, dataProcess(latency1)))
         latency2_res = '\t'.join(map(str, dataProcess(latency2)))
 
+        # cobime the string
         throughput_res = str(rate) + '\t' + throughput1_res + '\t' + throughput2_res + '\n'
         droprate_res = str(rate) + '\t' + droprate1_res + '\t' + droprate2_res + '\n'
         latency_res = str(rate) + '\t' + latency1_res + '\t' + latency2_res + '\n'
 
+        # write data
         f_throughput.write(throughput_res)
         f_droprate.write(droprate_res)
         f_latency.write(latency_res)
