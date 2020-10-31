@@ -118,7 +118,7 @@ def getLatency(var, rate, i):
             if record['event'] == "r" and record['to_node'] == "4":
                 end_time2.update({record['seq_num'] : record['time']})
 
-    packets = {}
+    packets = set()
     for p in start_time1.keys():
         if p in end_time1.keys():
             packets.add(p)
@@ -130,7 +130,7 @@ def getLatency(var, rate, i):
             total_duration1 += duration
             total_packet1 += 1
 
-    packets = {}
+    packets = set()
     for p in start_time2.keys():
         if p in end_time2.keys():
             packets.add(p)

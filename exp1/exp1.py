@@ -76,7 +76,7 @@ def getLatency(var, rate, i):
     total_packet = 0
     latencyHelp(lines, start_time, end_time)
 
-    packets = {}
+    packets = set()
     for p in start_time.keys():
         if p in end_time.keys():
             packets.add(p)
