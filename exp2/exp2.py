@@ -2,10 +2,9 @@ import os
 import random
 from math import sqrt
 
-Pairs_Of_TCP_Variants = ['Reno_Reno']
+Pairs_Of_TCP_Variants = ['Reno_Reno','NewReno_Reno','Vegas_Vegas','NewReno_Vegas']
 
 NS = "/course/cs4700f12/ns-allinone-2.35/bin/ns "
-
 
 # parse each line in trace file into a dictionary
 def parse(line):
@@ -59,8 +58,10 @@ def getDropRate(var, rate, i):
     lines = f.readlines()
     f.close()
 
-    sendNum1 = recvdNum1 = 0
-    sendNum2 = recvdNum2 = 0
+    sendNum1 = 0
+    recvdNum1 = 0
+    sendNum2 = 0
+    recvdNum2 = 0
 
     for line in lines:
         record = parse(line)
@@ -97,8 +98,11 @@ def getLatency(var, rate, i):
     end_time1 = {}
     start_time2 = {}
     end_time2 = {}
-    total_duration1 = total_duration2 = 0.0
-    total_packet1 = total_packet2 = 0
+    total_duration1 = 0.0
+    total_duration2 = 0.0
+    total_packet1 = 0
+    total_packet2 = 0
+    
 
     for line in lines:
         record = parse(line)
@@ -112,7 +116,7 @@ def getLatency(var, rate, i):
             if record['event'] == "+" and record['from_node'] == "4":
                 start_time2.update({record['seq_num']: record['time']})
             if record['event'] == "r" and record['to_node'] == "4":
-                end_time2.update({record['seq_num']: record['time']})
+                end_time2.update({record['seq_num'] : record['time']})
 
     packets = {}
     for p in start_time1.keys():
