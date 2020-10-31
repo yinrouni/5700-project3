@@ -15,7 +15,7 @@ def parse(line):
            'dst_addr': contents[9], 'seq_num': contents[10], 'pkt_id': contents[11]}
     return ret
 
-
+# Help function of getLatency
 def latencyHelp(cxt, fromNode, toNode, start, end):
     if cxt['event'] == "+" and cxt['from_node'] == fromNode:
         start.update({cxt['seq_num']: cxt['time']})
@@ -31,6 +31,11 @@ def getDelay(total, duration):
 
 
 def getLatency(var, q):
+    """The function that get the latency
+    Args:
+        var: TCP variants
+        q: q in QUEUE
+    """
     f = open(var + "-" + q + "_output.tr")
     lines = f.readlines()
     f.close()
@@ -95,6 +100,11 @@ def getLatency(var, q):
 
 
 def getThroughput(var, q):
+    """The function that get the throughput
+    Args:
+        var: TCP variants
+        q: q in QUEUE
+    """
     f = open(var + "-" + q + "_output.tr")
     lines = f.readlines()
     f.close()
