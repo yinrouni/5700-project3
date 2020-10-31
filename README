@@ -39,3 +39,4 @@ constant rate(e.g. 5Mbps). Plot throughput, latency and packet
 drop rate vs. time(s) graphics and compare Reno(DropTail), Reno(RED), SACK(DropTail),
 SACK(RED), CBR(DropTail), CBR(RED) in this experiment.
 
+Rouni Yin implements exp1 and exp3. Chihao Sun implements exp2. And we work together on the rest part of the paper(Introduction and conclusion)
