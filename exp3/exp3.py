@@ -3,7 +3,7 @@ import os
 TCP = ['Reno', 'SACK']
 QUEUE = ['DropTail', 'RED']
 
-ns_command = "/course/cs4700f12/ns-allinone-2.35/bin/ns "
+NS = "/course/cs4700f12/ns-allinone-2.35/bin/ns "
 STEP = 0.5
 
 
@@ -48,15 +48,21 @@ def getLatency(var, q):
 
         if (record['time'] - clock > STEP):
             # cbr
-            packets = {x for x in start_time1.viewkeys() if x in end_time1.viewkeys()}
-            for i in packets:
+            packets = {}
+            for p in start_time1.keys():
+                if p in end_time1.keys():
+                    packets.add(p)
 
+            for i in packets:
                 duration = end_time1.get(i) - start_time1.get(i)
                 if (duration > 0):
                     total_duration1 += duration
                     total_packet1 += 1
             # tcp
-            packets = {x for x in start_time2.viewkeys() if x in end_time2.viewkeys()}
+            packets = {}
+            for p in start_time2.keys():
+                if p in end_time2.keys():
+                    packets.add(p)
             for i in packets:
                 duration = end_time2.get(i) - start_time2.get(i)
                 if duration > 0:
@@ -122,7 +128,7 @@ def getThroughput(var, q):
 # Generate trace files
 for var in TCP:
     for q in QUEUE:
-        os.system(ns_command + "exp3.tcl " + var + " " + q)
+        os.system(NS + "exp3.tcl " + var + " " + q)
 
 # Calculate Throughput and Latency
 for var in TCP:

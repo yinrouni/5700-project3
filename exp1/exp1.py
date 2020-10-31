@@ -4,7 +4,7 @@ from math import sqrt
 
 TCP_Variant = ['Reno', 'NewReno', 'Tahoe', 'Vegas']
 
-ns_command = "/course/cs4700f12/ns-allinone-2.35/bin/ns "
+NS = "/course/cs4700f12/ns-allinone-2.35/bin/ns "
 
 # parse each line in trace file into a dictionary
 def parse(line):
@@ -34,7 +34,6 @@ def getThroughput(var, rate, i):
             if record['event'] == "r":
                 recvdSize += record['pkt_size'] * 8
                 end_time = record['time']
-    # print('DEBUG:' + str(recvdSize) + ' ' + str(end_time) + ' ' + str(start_time))
     return recvdSize / (end_time - start_time) / 1000000
 
 
@@ -73,7 +72,11 @@ def getLatency(var, rate, i):
                 start_time.update({record['seq_num']: record['time']})
             if record['event'] == "r" and record['to_node']== "0":
                 end_time.update({record['seq_num']: record['time']})
-    packets = {x for x in start_time.viewkeys() if x in end_time.viewkeys()}
+    packets = {}
+    for p in start_time.keys():
+        if p in end_time.keys():
+            packets.add(p)
+
     for i in packets:
         start = start_time[i]
         end = end_time[i]
@@ -113,7 +116,7 @@ for i in range(0, 10):
             endTime = 18
 
             os.system(
-                ns_command + "exp1.tcl " + var + " " + str(rate) + " " + str(startTime) + " " + str(
+                NS + "exp1.tcl " + var + " " + str(rate) + " " + str(startTime) + " " + str(
                     endTime) + " " + str(i))
 
 

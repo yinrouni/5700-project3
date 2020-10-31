@@ -4,7 +4,7 @@ from math import sqrt
 
 Pairs_Of_TCP_Variants = ['Reno_Reno']
 
-ns_command = "/course/cs4700f12/ns-allinone-2.35/bin/ns "
+NS = "/course/cs4700f12/ns-allinone-2.35/bin/ns "
 
 # parse each line in trace file into a dictionary
 def parse(line):
@@ -114,17 +114,23 @@ def getLatency(var, rate, i):
                 start_time2.update({record['seq_num'] : record['time']})
             if record['event'] == "r" and record['to_node'] == "4":
                 end_time2.update({record['seq_num'] : record['time']})
-                
-    packets = {x for x in start_time1.viewkeys() if x in end_time1.viewkeys()}
+
+    packets = {}
+    for p in start_time1.keys():
+        if p in end_time1.keys():
+            packets.add(p)
     for i in packets:
         start = start_time1[i]
         end = end_time1[i]
         duration = end - start
-        if(duration > 0):
+        if duration > 0:
             total_duration1 += duration
             total_packet1 += 1
 
-    packets= {x for x in start_time2.viewkeys() if x in end_time2.viewkeys()}
+    packets = {}
+    for p in start_time2.keys():
+        if p in end_time2.keys():
+            packets.add(p)
     for i in packets:
         start = start_time2[i]
         end = end_time2[i]
@@ -171,7 +177,7 @@ for var in Pairs_Of_TCP_Variants:
             tcp2_start_time = random.random()
             cbr_start_time = random.random() * 12
             tcps = var.split('_')
-            os.system(ns_command + "exp2.tcl " + tcps[0] + " " + tcps[1] + " " + str(rate) + " " + \
+            os.system(NS + "exp2.tcl " + tcps[0] + " " + tcps[1] + " " + str(rate) + " " + \
                 str(cbr_start_time) + " " +str(tcp2_start_time) + " " + str(i))
 
 
