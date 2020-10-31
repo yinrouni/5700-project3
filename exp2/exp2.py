@@ -2,7 +2,7 @@ import os
 import random
 from math import sqrt
 
-Pairs_Of_TCP_Variants = ['Reno_Reno']
+Pairs_Of_TCP_Variants = ['Reno_Reno','NewReno_Reno','Vegas_Vegas','NewReno_Vegas']
 
 ns_command = "/course/cs4700f12/ns-allinone-2.35/bin/ns "
 
