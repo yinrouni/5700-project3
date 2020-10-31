@@ -22,7 +22,7 @@ def latencyHelp(cxt, fromNode, toNode, start, end):
     if cxt['event'] == "r" and cxt['to_node'] == toNode:
         end.update({cxt['seq_num']: cxt['time']})
 
-
+# help function of getlatency
 def getDelay(total, duration):
     if total == 0:
         return 0
@@ -42,6 +42,7 @@ def getLatency(var, q):
 
     output = open('exp3_' + var + '_' + q + '_delay.dat', 'w')
 
+    # set initial data
     start_time1 = {}
     end_time1 = {}
     total_duration1 = total_duration2 = 0.0
@@ -111,6 +112,7 @@ def getThroughput(var, q):
 
     output = open('exp3_' + var + '_' + q + '_throughput.dat', 'w')
 
+    # set initial data
     clock = 0.0
     sum1 = sum2 = 0
 
@@ -123,6 +125,7 @@ def getThroughput(var, q):
             # TCP
             sum2 += record['pkt_size']
 
+        # calculate the result
         if (record['time'] - clock > STEP):
             res1 = sum1 * 8 / STEP / 1000000
             res2 = sum2 * 8 / STEP / 1000000

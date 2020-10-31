@@ -24,24 +24,28 @@ def getThroughput(var, rate, i):
     Returns: 
         float return the throughput of TCP
     """
+    # trece file name
     filename = var + "_output-" + str(rate) + "-" + str(i) + ".tr"
     f = open(filename)
     lines = f.readlines()
     f.close()
+    # set initial data
     start_time = 200.0
     end_time = 0.0
     recvdSize = 0
     for line in lines:
         record = parse(line)
         if record['flow_id'] == "1":
-            # print(line)
             if record['event'] == "+" and record['from_node'] == "0":
+                # get TCP flow start time
                 if (record['time'] < start_time):
                     start_time = record['time']
 
+            # get TCP flow end time
             if record['event'] == "r":
                 recvdSize += record['pkt_size'] * 8
                 end_time = record['time']
+    # calculate troughput and return
     return recvdSize / (end_time - start_time) / 1000000
 
 
@@ -66,6 +70,7 @@ def getDropRate(var, rate, i):
                 sendNum += 1
             if record['event'] == "r":
                 recvdNum += 1
+    # calculate drop rate and return it
     if sendNum == 0:
         return 0
     else:
@@ -115,6 +120,7 @@ def getLatency(var, rate, i):
         if duration > 0:
             total_duration += duration
             total_packet += 1
+    # calculate drop rate and return it
     if total_packet == 0:
         return 0
     return total_duration / total_packet * 1000
@@ -146,6 +152,7 @@ for i in range(0, 10):
             startTime = random.random() * 12
             endTime = 18
 
+            # excute the ns command
             os.system(
                 NS + "exp1.tcl " + var + " " + str(rate) + " " + str(startTime) + " " + str(
                     endTime) + " " + str(i))
@@ -163,9 +170,8 @@ for var in TCP_Variant:
             throughput.append(getThroughput(var, rate, i))
             droprate.append(getDropRate(var, rate, i))
             latency.append(getLatency(var, rate, i))
-        # print(throughput)
-        # print(droprate)
-        # print(latency)
+
+        # get mean and stddev result    
         throughputRes = '\t'.join(map(str, dataProcess(throughput)))
         latencyRes = '\t'.join(map(str, dataProcess(latency)))
         droprateRes = '\t'.join(map(str, dataProcess(droprate)))

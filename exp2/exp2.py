@@ -24,17 +24,22 @@ def getThroughput(var, rate, i):
     Returns: 
         String return the throughputs of two TCP
     """
+
+    # trace file name
     filename = var + "_output-" + str(rate) + "-" + str(i) + ".tr"
     f = open(filename)
     lines = f.readlines()
     f.close()
 
+    # set initial data
     start_time1 = 200.0
     start_time2 = 200.0
     end_time1 = 0.0
     end_time2 = 0.0
     recvdSize1 = 0
     recvdSize2 = 0
+
+    # get Two TCP flow start time and end time
     for line in lines:
         record = parse(line)
         if record['flow_id'] == "1":
@@ -55,6 +60,7 @@ def getThroughput(var, rate, i):
                 recvdSize2 += record['pkt_size'] * 8
                 end_time2 = record['time']
 
+    # calculate the troughput
     throughput1 = recvdSize1 / (end_time1 - start_time1) / 1000000
     throughput2 = recvdSize2 / (end_time2 - start_time2) / 1000000
     return str(throughput1) + '\t' + str(throughput2)
@@ -69,16 +75,20 @@ def getDropRate(var, rate, i):
     Returns: 
         String return the drop rate of two TCP
     """
+
+    # trace file name
     filename = var + "_output-" + str(rate) + "-" + str(i) + ".tr"
     f = open(filename)
     lines = f.readlines()
     f.close()
 
+     # set initial data
     sendNum1 = 0
     recvdNum1 = 0
     sendNum2 = 0
     recvdNum2 = 0
 
+    #get send number and recvied number
     for line in lines:
         record = parse(line)
         if record['flow_id'] == "1":
@@ -92,17 +102,35 @@ def getDropRate(var, rate, i):
             if record['event'] == "r":
                 recvdNum2 += 1
 
-    droprate1 = 0 if sendNum1 == 0 else float(sendNum1 - recvdNum1) / float(sendNum1)
-    droprate2 = 0 if sendNum2 == 0 else float(sendNum2 - recvdNum2) / float(sendNum2)
+    #calculate the drop rate 
+    if sendNum1 == 0:
+        droprate1 = 0
+    else:
+        droprate1 = float(sendNum1 - recvdNum1) / float(sendNum1)
+
+    if sendNum2 == 0:
+        droprate2 = 0
+    else:
+        droprate2 = float(sendNum2 - recvdNum2) / float(sendNum2)
 
     return str(droprate1) + '\t' + str(droprate2)
 
-
+# latency help function 
 def getDelay(total, duration):
     if total == 0:
         return 0
     else:
         return duration / total * 1000
+
+# The help function of getLatency
+def latencyHelp(cxt, start_time, end_time):
+    for line in cxt:
+        record = parse(line)
+        if record['flow_id'] == "1":
+            if record['event'] == "+" and record['from_node'] == "0":
+                start_time.update({record['seq_num']: record['time']})
+            if record['event'] == "r" and record['to_node']== "0":
+                end_time.update({record['seq_num']: record['time']})
 
 
 def getLatency(var, rate, i):
@@ -130,20 +158,9 @@ def getLatency(var, rate, i):
     total_packet1 = 0
     total_packet2 = 0
     
-
-    for line in lines:
-        record = parse(line)
-        if record['flow_id'] == "1":
-            if record['event'] == "+" and record['from_node'] == "0":
-                start_time1.update({record['seq_num']: record['time']})
-            if record['event'] == "r" and record['to_node'] == "0":
-                end_time1.update({record['seq_num']: record['time']})
-
-        if record['flow_id'] == "2":
-            if record['event'] == "+" and record['from_node'] == "4":
-                start_time2.update({record['seq_num']: record['time']})
-            if record['event'] == "r" and record['to_node'] == "4":
-                end_time2.update({record['seq_num'] : record['time']})
+    # get start time and end time
+    latencyHelp(lines, start_time1, end_time1)
+    latencyHelp(lines, start_time2, end_time2)
 
     packets = set()
     for p in start_time1.keys():
@@ -169,6 +186,7 @@ def getLatency(var, rate, i):
             total_duration2 += duration
             total_packet2 += 1
 
+    # calculate the latency
     return str(getDelay(total_packet1, total_duration1)) + '\t' + str(getDelay(total_packet2, total_duration2))
 
 
