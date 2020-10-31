@@ -16,6 +16,20 @@ def parse(line):
     return ret
 
 
+def latencyHelp(cxt, fromNode, toNode, start, end):
+    if cxt['event'] == "+" and cxt['from_node'] == fromNode:
+        start.update({cxt['seq_num']: cxt['time']})
+    if cxt['event'] == "r" and cxt['to_node'] == toNode:
+        end.update({cxt['seq_num']: cxt['time']})
+
+
+def getDelay(total, duration):
+    if total == 0:
+        return 0
+    else:
+        return duration / total * 1000
+
+
 def getLatency(var, q):
     f = open(var + "-" + q + "_output.tr")
     lines = f.readlines()
@@ -35,16 +49,10 @@ def getLatency(var, q):
         record = parse(line)
         # CBR
         if record['flow_id'] == "0":
-            if record['event'] == "+" and record['from_node'] == "4":
-                start_time1.update({record['seq_num']: record['time']})
-            if record['event'] == "r" and record['to_node'] == "5":
-                end_time1.update({record['seq_num']: record['time']})
+            latencyHelp(record, "4", "5", start_time1, end_time1)
         # TCP
         if record['flow_id'] == "1":
-            if record['event'] == "+" and record['from_node'] == "0":
-                start_time2.update({record['seq_num']: record['time']})
-            if record['event'] == "r" and record['to_node'] == "0":
-                end_time2.update({record['seq_num']: record['time']})
+            latencyHelp(record, "0", "0", start_time2, end_time2)
 
         if (record['time'] - clock > STEP):
             # cbr
@@ -55,9 +63,10 @@ def getLatency(var, q):
 
             for i in packets:
                 duration = end_time1.get(i) - start_time1.get(i)
-                if (duration > 0):
+                if duration > 0:
                     total_duration1 += duration
                     total_packet1 += 1
+
             # tcp
             packets = {}
             for p in start_time2.keys():
@@ -69,17 +78,8 @@ def getLatency(var, q):
                     total_duration2 += duration
                     total_packet2 += 1
 
-            if total_packet1 == 0:
-                delay1 = 0
-            else:
-                delay1 = total_duration1 / total_packet1 * 1000
-
-            if total_packet2 == 0:
-                delay2 = 0
-            else:
-                delay2 = total_duration2 / total_packet2 * 1000
-
-            output.write(str(clock) + '\t' + str(delay1) + '\t' + str(delay2) + '\n')
+            output.write(str(clock) + '\t' + str(getDelay(total_packet1, total_duration1)) + '\t' + str(getDelay(
+                total_packet2, total_duration2)) + '\n')
             # Clear counter
             clock += STEP
             start_time1 = {}
@@ -89,7 +89,8 @@ def getLatency(var, q):
             total_duration1 = total_duration2 = 0.0
             total_packet1 = total_packet2 = 0
 
-    output.write(str(clock) + '\t' + str(delay1) + '\t' + str(delay2) + '\n')
+    output.write(str(clock) + '\t' + str(getDelay(total_packet1, total_duration1)) + '\t' + str(getDelay(
+        total_packet2, total_duration2)) + '\n')
     output.close()
 
 

@@ -56,6 +56,15 @@ def getDropRate(var, rate, i):
         return float(sendNum - recvdNum) / float(sendNum)
 
 
+def latencyHelp(cxt, start_time, end_time):
+    for line in cxt:
+        record = parse(line)
+        if record['flow_id'] == "1":
+            if record['event'] == "+" and record['from_node'] == "0":
+                start_time.update({record['seq_num']: record['time']})
+            if record['event'] == "r" and record['to_node']== "0":
+                end_time.update({record['seq_num']: record['time']})
+
 def getLatency(var, rate, i):
     filename = var + "_output-" + str(rate) + "-" + str(i) + ".tr"
     f = open(filename)
@@ -65,13 +74,8 @@ def getLatency(var, rate, i):
     end_time = {}
     total_duration = 0.0
     total_packet = 0
-    for line in lines:
-        record = parse(line)
-        if record['flow_id'] == "1":
-            if record['event'] == "+" and record['from_node'] == "0":
-                start_time.update({record['seq_num']: record['time']})
-            if record['event'] == "r" and record['to_node']== "0":
-                end_time.update({record['seq_num']: record['time']})
+    latencyHelp(lines, start_time, end_time)
+
     packets = {}
     for p in start_time.keys():
         if p in end_time.keys():
