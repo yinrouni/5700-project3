@@ -123,13 +123,13 @@ def getDelay(total, duration):
         return duration / total * 1000
 
 # The help function of getLatency
-def latencyHelp(cxt, start_time, end_time):
+def latencyHelp(cxt, start_time, end_time,flow_id,from_node):
     for line in cxt:
         record = parse(line)
-        if record['flow_id'] == "1":
-            if record['event'] == "+" and record['from_node'] == "0":
+        if record['flow_id'] == flow_id:
+            if record['event'] == "+" and record['from_node'] == from_node:
                 start_time.update({record['seq_num']: record['time']})
-            if record['event'] == "r" and record['to_node']== "0":
+            if record['event'] == "r" and record['to_node']== from_node:
                 end_time.update({record['seq_num']: record['time']})
 
 
@@ -159,8 +159,8 @@ def getLatency(var, rate, i):
     total_packet2 = 0
     
     # get start time and end time
-    latencyHelp(lines, start_time1, end_time1)
-    latencyHelp(lines, start_time2, end_time2)
+    latencyHelp(lines, start_time1, end_time1,"1","0")
+    latencyHelp(lines, start_time2, end_time2,"2","4")
 
     packets = set()
     for p in start_time1.keys():
