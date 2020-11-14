@@ -2,7 +2,7 @@ import os
 import random
 from math import sqrt
 
-TCP_Variant = ['Reno', 'NewReno', 'Tahoe', 'Vegas']
+TCP_Variant = ['Reno']
 
 NS = "/course/cs4700f12/ns-allinone-2.35/bin/ns "
 
@@ -36,13 +36,13 @@ def getThroughput(var, rate, i):
     for line in lines:
         record = parse(line)
         if record['flow_id'] == "1":
-            if record['event'] == "+" and record['from_node'] == "0":
+            if record['event'] == "-" and record['from_node'] == "0":
                 # get TCP flow start time
                 if (record['time'] < start_time):
                     start_time = record['time']
 
             # get TCP flow end time
-            if record['event'] == "r":
+            if record['event'] == "r" and record['to_node'] == "3":
                 recvdSize += record['pkt_size'] * 8
                 end_time = record['time']
     # calculate troughput and return
@@ -145,11 +145,11 @@ def dataProcess(data):
 
 
 # Generate trace file
-for i in range(0, 10):
+for i in range(0, 2):
     for rate in range(1, 11):
         for var in TCP_Variant:
             # Vary relative start time of 2 flows
-            startTime = random.random() * 12
+            startTime = random.random()
             endTime = 18
 
             # excute the ns command
@@ -166,7 +166,7 @@ for var in TCP_Variant:
         throughput = []
         droprate = []
         latency = []
-        for i in range(0, 10):
+        for i in range(0, 2):
             throughput.append(getThroughput(var, rate, i))
             droprate.append(getDropRate(var, rate, i))
             latency.append(getLatency(var, rate, i))

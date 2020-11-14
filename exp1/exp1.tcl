@@ -51,6 +51,8 @@ set cbr [new Application/Traffic/CBR]
 $cbr attach-agent $udp
 $cbr set type_ CBR
 $cbr set rate_ ${rate}mb
+$cbr set packet_size_ 1000
+$cbr set random_ false
 
 #Setup a TCP conncection
 if {$variant eq "Tahoe"} {
@@ -69,6 +71,7 @@ set sink [new Agent/TCPSink]
 $ns attach-agent $n4 $sink
 $ns connect $tcp $sink
 $tcp set fid_ 1
+$tcp set window_ 100
 
 #setup a FTP Application
 set ftp [new Application/FTP]
