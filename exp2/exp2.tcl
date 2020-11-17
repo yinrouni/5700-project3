@@ -8,14 +8,8 @@ set variant2 [lindex $argv 1]
 # CBR rate
 set rate [lindex $argv 2]
 
-# CBR start time
-set tcp1StartTime [lindex $argv 3]
-
-# TCP2 start time
-set tcp2StartTime [lindex $argv 4]
-
 # index
-set i [lindex $argv 5]
+set i [lindex $argv 3]
 
 # Open the trace file
 set tf [open ${variant1}_${variant2}_output-${rate}-${i}.tr w]
@@ -57,6 +51,8 @@ set cbr [new Application/Traffic/CBR]
 $cbr attach-agent $udp
 $cbr set type_ CBR
 $cbr set rate_ ${rate}mb
+$cbr set packet_size_ 1000
+$cbr set random_ false
 
 # Setup a TCP conncection
 if {$variant1 eq "Reno"} {
@@ -72,6 +68,8 @@ $ns attach-agent $n1 $tcp1
 set sink1 [new Agent/TCPSink]
 $ns attach-agent $n4 $sink1
 $ns connect $tcp1 $sink1
+$tcp1 set fid_ 1
+$tcp1 set window_ 100
 
 if {$variant2 eq "Reno"} {
 	set tcp2 [new Agent/TCP/Reno]
@@ -84,18 +82,22 @@ $ns attach-agent $n5 $tcp2
 set sink2 [new Agent/TCPSink]
 $ns attach-agent $n6 $sink2
 $ns connect $tcp2 $sink2
+$tcp2 set fid_ 2
+$tcp2 set window_ 100
 
 # Setup a FTP Application
 set ftp1 [new Application/FTP]
 $ftp1 attach-agent $tcp1
+$ftp1 set type_ FTP
 
 set ftp2 [new Application/FTP]
 $ftp2 attach-agent $tcp2
+$ftp2 set type_ FTP
 
 # Schedule events for the CBR and FTP agents
 $ns at 0.0 "$cbr start"
-$ns at $tcp1StartTime "$ftp1 start"
-$ns at $tcp2StartTime "$ftp2 start"
+$ns at 1.0 "$ftp1 start"
+$ns at 1.0 "$ftp2 start"
 $ns at 25.0 "$ftp2 stop"
 $ns at 25.0 "$ftp1 stop"
 $ns at 25.0 "$cbr stop"

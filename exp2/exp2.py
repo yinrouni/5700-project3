@@ -2,7 +2,7 @@ import os
 import random
 from math import sqrt
 
-Pairs_Of_TCP_Variants = ['Reno_Reno','NewReno_Reno','Vegas_Vegas','NewReno_Vegas']
+Pairs_Of_TCP_Variants = ['Reno_Reno']
 
 NS = "/course/cs4700f12/ns-allinone-2.35/bin/ns "
 
@@ -47,7 +47,7 @@ def getThroughput(var, rate, i):
                 if (record['time'] < start_time1):
                     start_time1 = record['time']
 
-            if record['event'] == "r":
+            if record['event'] == "r" and record['to_node'] == "3":
                 recvdSize1 += record['pkt_size'] * 8
                 end_time1 = record['time']
 
@@ -56,7 +56,7 @@ def getThroughput(var, rate, i):
                 if (record['time'] < start_time2):
                     start_time2 = record['time']
 
-            if record['event'] == "r":
+            if record['event'] == "r" and record['to_node'] == "5":
                 recvdSize2 += record['pkt_size'] * 8
                 end_time2 = record['time']
 
@@ -213,11 +213,8 @@ def dataProcess(data):
 for var in Pairs_Of_TCP_Variants:
     for rate in range(1, 11):
         for i in range(0, 10):
-            tcp1_start_time = random.random()
-            tcp2_start_time = random.random() * 12
             tcps = var.split('_')
-            os.system(NS + "exp2.tcl " + tcps[0] + " " + tcps[1] + " " + str(rate) + " " + \
-                      str(tcp1_start_time) + " " + str(tcp2_start_time) + " " + str(i))
+            os.system(NS + "exp2.tcl " + tcps[0] + " " + tcps[1] + " " + str(rate) + " " + str(i))
 
 # generate the data file
 for var in Pairs_Of_TCP_Variants:

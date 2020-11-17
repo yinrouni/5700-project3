@@ -4,7 +4,7 @@ TCP = ['Reno', 'SACK']
 QUEUE = ['DropTail', 'RED']
 
 NS = "/course/cs4700f12/ns-allinone-2.35/bin/ns "
-STEP = 0.5
+STEP = 1.0
 
 
 # parse each line in trace file into a dictionary
@@ -126,7 +126,7 @@ def getThroughput(var, q):
             sum2 += record['pkt_size']
 
         # calculate the result
-        if (record['time'] - clock > STEP):
+        if (record['time'] - clock >= STEP):
             res1 = sum1 * 8 / STEP / 1000000
             res2 = sum2 * 8 / STEP / 1000000
 
