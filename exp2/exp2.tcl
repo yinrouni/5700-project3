@@ -100,10 +100,10 @@ $ns at 1.0 "$ftp1 start"
 $ns at 1.0 "$ftp2 start"
 $ns at 25.0 "$ftp2 stop"
 $ns at 25.0 "$ftp1 stop"
-$ns at 25.0 "$cbr stop"
+$ns at 26.0 "$cbr stop"
 
 # Call the finish procedure after  seconds of simulation time
-$ns at 25.0 "finish"
+$ns at 28.0 "finish"
 
 # Run the simulation
 $ns run

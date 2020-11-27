@@ -77,7 +77,7 @@ $ns attach-agent $n1 $tcp
 $ns attach-agent $n4 $sink
 $ns connect $tcp $sink
 $tcp set fid_ 1
-$tcp set window_ 10000
+$tcp set window_ 100
 
 #setup a FTP Application
 set ftp [new Application/FTP]
@@ -86,12 +86,12 @@ $ftp set type_ FTP
 
 #Schedule events for the CBR and FTP agents
 $ns at 0.0 "$ftp start"
-$ns at 10.0 "$cbr start"
-$ns at 20.0 "$cbr stop"
-$ns at 30.0 "$ftp stop"
+$ns at 60.0 "$cbr start"
+$ns at 120.0 "$cbr stop"
+$ns at 180.0 "$ftp stop"
 
 #Call the finish procedure after  seconds of simulation time
-$ns at 32.0 "finish"
+$ns at 182.0 "finish"
 
 #Run the simulation
 $ns run

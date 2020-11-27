@@ -79,13 +79,13 @@ $ftp attach-agent $tcp
 $ftp set type_ FTP
 
 #Schedule events for the CBR and FTP agents
-$ns at 0.0 "$ftp start"
-$ns at $start "$cbr start"
-$ns at 18 "$cbr stop"
-$ns at 18 "$ftp stop"
+$ns at 0.0 "$cbr start"
+$ns at $start "$ftp start"
+$ns at 26 "$cbr stop"
+$ns at 25 "$ftp stop"
 
 #Call the finish procedure after  seconds of simulation time
-$ns at 20.0 "finish"
+$ns at 28.0 "finish"
 
 #Run the simulation
 $ns run

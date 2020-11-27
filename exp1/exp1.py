@@ -145,7 +145,7 @@ def dataProcess(data):
 
 
 # Generate trace file
-for i in range(0, 2):
+for i in range(0, 10):
     for rate in range(1, 11):
         for var in TCP_Variant:
             # Vary relative start time of 2 flows
@@ -166,7 +166,7 @@ for var in TCP_Variant:
         throughput = []
         droprate = []
         latency = []
-        for i in range(0, 2):
+        for i in range(0, 10):
             throughput.append(getThroughput(var, rate, i))
             droprate.append(getDropRate(var, rate, i))
             latency.append(getLatency(var, rate, i))

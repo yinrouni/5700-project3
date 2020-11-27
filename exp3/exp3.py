@@ -4,7 +4,7 @@ TCP = ['Reno', 'SACK']
 QUEUE = ['DropTail', 'RED']
 
 NS = "/course/cs4700f12/ns-allinone-2.35/bin/ns "
-STEP = 1.0
+STEP = 10.0
 
 
 # parse each line in trace file into a dictionary
